@@ -1,35 +1,61 @@
-//FIRSTLINE
+#!/usr/bin/env node
+
 var fs = require('fs')
-var rc = require('rc')('hipster')
+var rc = require('./config')
 var ls = fs.createWriteStream('./debug.log')
 var Document = require('./document')
-
-var doc = new Document()
-
-var offset = 0
-var height = 32
-var margin = 4
-var page = 20
-
-var file
-if(rc._[0]) 
-  file = rc._[0], title = file 
-else file = __dirname+'/README.md', noSave = true, title = 'README'
-
-//split into lines
-doc.lines = toLines(fs.readFileSync(file, 'utf-8'))
-
-//set title to hipster.
-process.stdout.
-  write('\x1b]0;hipster - ' + (title) + '\007')
-
-doc.lines.pop()
-
 var c = require('charm')(process.stdout)
 var key = require('keypress')
-var inspect = require('util').inspect
 
-var words = require('./words')
+//internal representation of our text file
+var doc = new Document()
+
+var offset = 0 
+var height = rc.height
+var margin = rc.margin
+var page   = rc.page
+var noSave = false
+var log
+
+//try and open the file the user past in
+//if it doesn't exit yet, we will write 
+//to it on Ctrl-S
+
+var file
+if(rc._[0]) {
+  file = rc._[0], title = file 
+  try {
+    doc.lines = toLines(fs.readFileSync(file, 'utf-8'))
+    doc.lines.pop()
+  } catch (err) {
+    //new file
+    doc.lines = ['\n']
+  }
+}
+else file = __dirname+'/README.md', noSave = true, title = 'README'
+
+
+//setup debugging
+if(!rc.debug)
+  log = console.error = function noop(){}
+else if('string' == typeof rc.debug) {
+  var inspect = require('util').inspect
+  var ds = fs.createWriteStream(rc.debug)
+  log = console.error = function () {
+    ds.write(
+      [].arguments.slice.call(arguments)
+        .map(inspect).join(' ')
+      +'\n'
+    )    
+  }
+}
+//log to stderr.
+//hipster file 2> debug.log
+else log = console.error 
+
+//set title to hipster - $filename
+process.stdout.
+  write('\x1b]0;hipster - ' + (title) + '\007')
 
 process.on('exit', function () {
   c.reset()
@@ -42,6 +68,7 @@ process.on('unhandledException', function (err) {
 })
 
 key(process.stdin)
+
 process.stdin.setRawMode(true)
 process.stdin.resume()
 
@@ -53,6 +80,7 @@ function padNum(n, m) {
 }
 
 function render (line, x, y) {
+  if(!line) return
   c.foreground(y % 2 ? 'yellow' : 'green')
     .display(y % 10 ? 'dim' : 'bright')
     .write(padNum(y, margin -1) + ' ') 
@@ -62,8 +90,6 @@ function render (line, x, y) {
   .foreground('blue').write('\u266b')
   .foreground('white').write('\n')
 }
-
-var log = console.error
 
 function toLines(data) {
   return data.split('\n').map(function (e, i, a) {
@@ -133,43 +159,30 @@ function scroll (line, x, y) {
   var target = offset
   //there is an off by one error in here somewhere.
   //when I scroll down,
-  if (y - (offset + height) > 0) {//high
-    console.error('increase')
+  if (y - (offset + height) > 0) 
     target = y - height
-    //erase Math.abs(offset - _offset) lines from end,
-    //and update that many lines at the start.
-  }
-  else if (y - offset<= 0) { 
-    console.error('decrease')
+  else if (y - offset<= 0) 
     target = y - 1
-  }
-  console.error(offset, height)
-  //for lazyness, redraw the whole screen
-  console.error('SCROLL', {c: y, o: offset, h: y - (offset + height), l: y - offset})
 
+  //if there was lots of scrolling, redraw the whole screen
   if(Math.abs(target - offset) >= page) {
     offset = target
     return doc.emit('redraw')
   }
 
+  //there are event listeners that pop off the lines at the other end
+  //when scrolling happens.
   if(target != offset) {
-    console.error('SCROLL AMOUNT', target - offset)
     var sa = Math.abs(target - offset)
     var i = 1 
     while(offset !== target) {
-      console.error('>>>>>>>>>>>>' , offset, target)
       if(target > offset) {
-        console.error('INCREASE ')
         //scrolling down, delete line from TOP.
-        console.error('delete line from', offset)
         doc.emit('delete_line', '', 1, 1 + offset)
         offset ++
       } 
       else if(target < offset){
-        //offset --
         //scrolling up, add line to top.
-        console.error('decrease', offset - 1)
-        console.error('new line at line from', doc.lines[offset - 1], offset)
         doc.emit('new_line', doc.lines[offset - 1], 1, offset)
         offset --
       }
@@ -178,6 +191,7 @@ function scroll (line, x, y) {
   }
 }
 
+//cursor has moved.
 doc.on('cursor', function (line, x, y) {
   scroll(line, x, y)
   c.position(x + margin, y - offset)
@@ -237,8 +251,6 @@ process.stdin.on('keypress', function (ch, key) {
 
     if(key.name == 'end') doc.firstLine().start().move()
     if(key.name == 'home') doc.lastLine().end().move()
-
-    log(key)
   }
   
   if(key.name == 'pageup') {
@@ -254,25 +266,25 @@ process.stdin.on('keypress', function (ch, key) {
     key.name = key.name.toUpperCase()
 
   c.foreground('white')
+  if(key.ctrl) {
 
-  if(key.name == 'r' && key.ctrl)
-    return doc.emit('redraw')
-   if(key.name == 'd' && key.ctrl)
-    return console.error(doc.lines)
-  if(key.name == 'c' && key.ctrl) {
-    c.reset()
-    process.stdin.pause()
+    if(key.name == 's' && !noSave)
+      return fs.writeFileSync(file, doc.lines.join(''), 'utf-8')
+    if(key.name == 'r')
+      return doc.emit('redraw')
+    if(key.name == 'd')
+      return console.error(doc.lines)
+    if(key.name == 'q') {
+      c.reset()
+      process.stdin.pause()
+    }
   }
 
   if     (key.name == 'delete')    doc.delete(1)
   else if(key.name == 'backspace') doc.delete(-1)
   else if(key.name == 'enter')     doc.newline()
   else if(key.name == 'tab')       doc.write('  ') 
-  //do something clever with indentation.
   else if(' ' <= ch && ch <= '~') doc.write(ch)
-  
-  log(doc.row, doc.column, doc.lines[doc.row], '--', key.name, doc.isFirst(), doc.isLast())
-
 })
 
 doc.emit('redraw', '', 1, 1)
