@@ -17,27 +17,28 @@ var page   = rc.page
 var noSave = false
 var log
 
+//default to empty file
+doc.lines = ['\n']
+
 //try and open the file the user past in
 //if it doesn't exit yet, we will write 
 //to it on Ctrl-S
 
-var file
-if(rc._[0]) {
-  file = rc._[0], title = file 
-  try {
-    doc.lines = toLines(fs.readFileSync(file, 'utf-8'))
-    doc.lines.pop()
-  } catch (err) {
-    //new file
-    doc.lines = ['\n']
-  }
-}
-else file = __dirname+'/README.md', noSave = true, title = 'README'
+var file = rc._[0] || __dirname+'/README.md', title = file 
 
+try {
+  doc.lines = toLines(fs.readFileSync(file, 'utf-8'))
+  doc.lines.pop()
+} catch (_) { }
+
+if(rc._[0]) title = file
+else        noSave = true, title = 'README'
 
 //setup debugging
 if(!rc.debug)
   log = console.error = function noop(){}
+
+//log to a file
 else if('string' == typeof rc.debug) {
   var inspect = require('util').inspect
   var ds = fs.createWriteStream(rc.debug)
@@ -49,6 +50,7 @@ else if('string' == typeof rc.debug) {
     )    
   }
 }
+
 //log to stderr.
 //hipster file 2> debug.log
 else log = console.error 
@@ -81,11 +83,15 @@ function padNum(n, m) {
 
 function render (line, x, y) {
   if(!line) return
-  c.foreground(y % 2 ? 'yellow' : 'green')
-    .display(y % 10 ? 'dim' : 'bright')
-    .write(padNum(y, margin -1) + ' ') 
-    .display('dim')
-  .foreground('white')
+
+  if(margin) {
+    c.foreground(y % 2 ? 'yellow' : 'green')
+      .display(y % 10 ? 'dim' : 'bright')
+      .write(padNum(y, margin - 1) + ' ') 
+      .display('dim')
+      .foreground('white')
+  }
+
   c.write(line.slice(0, line.length - 1))
   .foreground('blue').write('\u266b')
   .foreground('white').write('\n')
