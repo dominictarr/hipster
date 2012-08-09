@@ -1,0 +1,24 @@
+{
+  "name": "hipster",
+  "version": "0.0.0",
+  "homepage": "https://github.com/dominictarr/hipster",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dominictarr/hipster.git"
+  },
+  "dependencies": {
+    "charm": "~0.1.0",
+    "keypress": "~0.0.2"
+  },
+  "devDependencies": {
+    "tap": "0.3.0"
+  },
+  "bundleDependencies": [
+    "keypress"
+  ],
+  "scripts": {
+    "test": "tap test"
+  },
+  "author": "'Dominic Tarr' <dominic.tarr@gmail.com> (http://dominictarr.com)",
+  "license": "MIT"
+}

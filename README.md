@@ -1,0 +1,5 @@
+# hipster
+
+## License
+
+MIT
