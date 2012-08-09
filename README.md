@@ -30,7 +30,7 @@ Then
 ```
 hipster filename [options]
 
---margin     # Set to zero for no line numbers.
+--margin     # Set to N >= 2 for line numbers.
 --page       # PageUp/Down jump size.
 --height     # The Number of rows to use on the screen.
 
