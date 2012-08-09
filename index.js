@@ -85,10 +85,11 @@ function render (line, x, y) {
   if(!line) return
 
   if(margin) {
-    c.foreground(y % 2 ? 'yellow' : 'green')
+    c.background('black')
+      .foreground(y % 2 ? 'yellow' : 'green')
       .display(y % 10 ? 'dim' : 'bright')
-      .write(padNum(y, margin - 1) + ' ') 
-      .display('reset')
+      .write(padNum(y, margin - 1)) 
+      .display('reset').write(' ')
   }
 
   c.write(line.slice(0, line.length - 1))
@@ -191,7 +192,6 @@ function scroll (line, x, y) {
         doc.emit('new_line', doc.lines[offset - 1], 1, offset)
         offset --
       }
-
     } while(offset !== target);
   }
 }
