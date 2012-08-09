@@ -1,4 +1,4 @@
-var rc = require('rc')
+module.exports = require('rc')
 
   ('hipster', {
 
