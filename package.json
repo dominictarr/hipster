@@ -8,17 +8,19 @@
   },
   "dependencies": {
     "charm": "~0.1.0",
-    "keypress": "~0.0.2"
+    "keypress": "~0.0.2",
+    "rc": "0.0.3"
   },
   "devDependencies": {
     "tap": "0.3.0"
   },
   "bundleDependencies": [
-    "keypress"
+    "keypress", "charm"
   ],
   "scripts": {
     "test": "tap test"
   },
+  "bin": "./index.js",
   "author": "'Dominic Tarr' <dominic.tarr@gmail.com> (http://dominictarr.com)",
   "license": "MIT"
 }
