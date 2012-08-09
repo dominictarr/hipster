@@ -24,14 +24,19 @@ Will be easy to add these so-called "features" as plugins.
 
 ```
 npm install hipster -g
+```
 
+Then
+```
 hipster filename [options]
 
 --margin     # Set to zero for no line numbers.
 --page       # PageUp/Down jump size.
 --height     # The Number of rows to use on the screen.
 
-hipster` uses [rc](https://npm.im/rc) for unmanaging configuration. 
+```
+
+`hipster` uses [rc](https://npm.im/rc) for unmanaging configuration. 
 you should too.
 
 ## Controls
