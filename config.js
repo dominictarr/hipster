@@ -6,7 +6,7 @@ module.exports = require('rc')
     height: 32,
 
     //space for line numbers
-    margin: 4,
+    margin: 0,
 
     //pageup/down jump size
     page: 20
