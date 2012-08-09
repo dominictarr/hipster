@@ -88,13 +88,12 @@ function render (line, x, y) {
     c.foreground(y % 2 ? 'yellow' : 'green')
       .display(y % 10 ? 'dim' : 'bright')
       .write(padNum(y, margin - 1) + ' ') 
-      .display('dim')
-      .foreground('white')
+      .display('reset')
   }
 
   c.write(line.slice(0, line.length - 1))
   .foreground('blue').write('\u266b')
-  .foreground('white').write('\n')
+  .display('reset').write('\n')
 }
 
 function toLines(data) {
@@ -271,7 +270,7 @@ process.stdin.on('keypress', function (ch, key) {
   if(key.shift && key.name.length === 1)
     key.name = key.name.toUpperCase()
 
-  c.foreground('white')
+  c.display('reset')
   if(key.ctrl) {
 
     if(key.name == 's' && !noSave)
