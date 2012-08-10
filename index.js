@@ -44,7 +44,7 @@ else if('string' == typeof rc.debug) {
   var ds = fs.createWriteStream(rc.debug)
   log = console.error = function () {
     ds.write(
-      [].arguments.slice.call(arguments)
+      [].slice.call(arguments)
         .map(inspect).join(' ')
       +'\n'
     )    
@@ -83,6 +83,13 @@ function padNum(n, m) {
 
 function render (line, x, y) {
   if(!line) return
+  var m
+  if(doc.marks)
+    console.error(doc.marks)
+  if(doc.marks && doc.marks[0].y + 1 == y){
+    m = doc.marks[0]
+    line = line.substr(0, m.x) + '>>' + line.substring(m.x)
+  }
 
   if(margin) {
     c.background('black')
@@ -129,6 +136,12 @@ doc.on('delete_line', function (line, x, y) {
 //  if(doc.column != y)
     c.position(1, y - offset)
   c.delete('line')
+})
+
+doc.on('mark', function (min, max) {
+  //update lines between marks, that are on screen.
+  doc.emit('update_line', doc.lines[min.y], 1, min.y+1)
+  doc.emit('update_line', doc.lines[max.y], 1, max.y+1)
 })
 
 //'when the document is shortened, clear the last line
