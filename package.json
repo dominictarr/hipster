@@ -9,13 +9,15 @@
   "dependencies": {
     "charm": "~0.1.0",
     "keypress": "~0.0.2",
-    "rc": "0.0.3"
+    "rc": "0.0.3",
+    "colors": "~0.6.0-1"
   },
   "devDependencies": {
     "tap": "0.3.0"
   },
   "bundleDependencies": [
-    "keypress", "charm"
+    "keypress",
+    "charm"
   ],
   "scripts": {
     "test": "tap test"
