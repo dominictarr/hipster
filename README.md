@@ -54,8 +54,9 @@ If this editor is not hip enough for you, you may wish to consider
 
 ## Aknowledgements
 
-This module depends on [TooTallNate/keypress](https://github.com/tootallnate/keypress)
-and [substack](https://github.com/substack/node-charm)  
+This module depends on [TooTallNate/keypress](https://github.com/tootallnate/keypress),
+[substack/node-charm](https://github.com/substack/node-charm) and 
+[Marak/colors.js](https://github.com/Marak/colors.js)
 
 But the most important thing is the playful oneupsmanship that exists in the node
 community regarding ansi/terminal art. With out that I would probably not have attempted this.
