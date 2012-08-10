@@ -154,19 +154,23 @@ var methods = {
    //set a mark, to mark a section just call this twice
   mark: function (x, y) {
     if(x == null && y == null)
-      x = this.row, y = this.column
-    if(!this.marks)
-      this.marks = []
-    this.marks.push({x: x, y: y})
-    if(this.marks.length > 1)
-      this.marks.sort(cmp)
-    if(this.marks.length > 2)
-      this.marks.splice(1, this.marks.length - 2) 
+      x = this.column, y = this.row
+
+    var mark = {x: x, y: y}
+
+    if(!this.firstMark) this.firstMark =  mark
+    this.secondMark = mark
+
+    this.marks = [this.firstMark, this.secondMark].sort(cmp)
+    this.emit('mark', this.marks[0], this.marks[1])
   },
 
   //remove marks
   unmark: function () {
-    this.marks = null
+    var old = this.marks
+    this.firstMark = this.secondMark = this.marks = null
+    if(old)
+      this.emit('unmark', old[0], old[1])
   },
 
   //internal. emit an event with current line and cursor pos.
