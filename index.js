@@ -7,6 +7,9 @@ var Document = require('./document')
 var c = require('charm')(process.stdout)
 var key = require('keypress')
 
+//monkeypatch colors onto String
+require('colors')
+
 //internal representation of our text file
 var doc = new Document()
 
@@ -83,12 +86,42 @@ function padNum(n, m) {
 
 function render (line, x, y) {
   if(!line) return
-  var m
-  if(doc.marks)
-    console.error(doc.marks)
-  if(doc.marks && doc.marks[0].y + 1 == y){
-    m = doc.marks[0]
-    line = line.substr(0, m.x) + '>>' + line.substring(m.x)
+
+  //don't render the '\n'
+  line = line.substring(0, line.length - 1)
+
+  if(doc.marks) {
+    console.error(doc.marks, y)
+    var m = doc.marks[0]
+    var M = doc.marks[1]
+    var diff = 0
+
+    //if the match starts and ends on the same line
+    if(m.y == M.y && m.y + 1 == y) {
+      var l =[ line.substring(0, m.x), line.substring(m.x, M.x), line.substring(M.x)]
+      console.error(l)
+      l[1] = l[1].cyan.inverse
+      line = l.join('')
+    }
+
+    //if we are inbetween the first and last matched lines.
+    else if(m.y + 1 < y && y < M.y + 1) {
+      console.error('INBETWEEN', line)
+      line = line.cyan.inverse
+    }
+
+    //if this is the first matched line
+    else if(m.y + 1 == y) {
+      console.error('PREFIX',line.substr(0, m.x), 0, m.x)
+      line = line.substr(0, m.x) + line.substr(m.x).cyan.inverse
+      console.error(JSON.stringify(line))
+    }
+
+    //if this is the last matched line
+    else if(M.y + 1 == y){
+      //if the first mark is on the same line, adjust for that.
+      line = line.substr(0, M.x).cyan.inverse + line.substr(M.x)
+    }
   }
 
   if(margin) {
@@ -99,7 +132,7 @@ function render (line, x, y) {
       .display('reset').write(' ')
   }
 
-  c.write(line.slice(0, line.length - 1))
+  c.write(line)
   .foreground('blue').write('\u266b')
   .display('reset').write('\n')
 }
@@ -138,11 +171,18 @@ doc.on('delete_line', function (line, x, y) {
   c.delete('line')
 })
 
-doc.on('mark', function (min, max) {
+function updateMark (min, max) {
+  console.error('MARK CHANGE', min, max)
   //update lines between marks, that are on screen.
-  doc.emit('update_line', doc.lines[min.y], 1, min.y+1)
-  doc.emit('update_line', doc.lines[max.y], 1, max.y+1)
-})
+  for(var i = min.y; i <= max.y; i ++)
+    doc.emit('update_line', doc.lines[i], 1, i+1)
+//  doc.emit('update_line', doc.lines[max.y], 1, max.y+1)
+  doc.move()
+}
+
+doc.on('mark', updateMark)
+doc.on('unmark', updateMark)
+
 
 //'when the document is shortened, clear the last line
 
@@ -166,6 +206,7 @@ doc.on('new_line', function () {
   doc.emit('erase_line', 
     doc.lines[offset + height], 1, offset + height + 1)
 })
+
 doc.on('delete_line', function () {
   //redraw the last line on the window.
   doc.emit('update_line', 
@@ -217,16 +258,14 @@ doc.on('cursor', function (line, x, y) {
 
 var shift = false
 process.stdin.on('keypress', function (ch, key) {
-  var f = false, l = false
 
+    //if it's shifted, _and_ they have pressed a directional key...
     if(key.shift) {
       if(!shift) doc.unmark()
-      doc.mark()
       shift = true
-    } else if (shift) {
-      console.error(doc.marks)
+      doc.mark()
+    } else if (shift)
       shift = false
-    }
 
     if(!key.ctrl) {
 
@@ -279,6 +318,10 @@ process.stdin.on('keypress', function (ch, key) {
     doc.row = Math.min(doc.row + page, doc.lines.length - 1)
     doc.move()
   }
+
+  //mark the new position if we have moved
+  if(key.shift)
+    doc.mark()
 
   if(key.shift && key.name.length === 1)
     key.name = key.name.toUpperCase()
