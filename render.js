@@ -5,7 +5,7 @@ module.exports = function (doc, rc) {
   var c = require('charm')(process.stdout)
 
   var renderers = []
-  var offset = 2
+  var offset = 0
 
   var height = rc.height
 
@@ -65,10 +65,10 @@ module.exports = function (doc, rc) {
   }
 
   function newLine (line, x, y) {
-    eraseLine('', 1, offset + height + 1)
     c.position(1, y - offset)
       .insert('line')
-    render(line, x, y)
+    updateLine(line, x, y, true)
+    eraseLine('', 1, offset + height + 1)
   }
 
   doc.on('update_line', updateLine)
@@ -77,7 +77,6 @@ module.exports = function (doc, rc) {
   doc.on('mark', updateMark)
   doc.on('unmark', updateMark)
   doc.on('delete_line', deleteLine) 
-
 
   //cursor has moved.
   function cursor (line, x, y) {
