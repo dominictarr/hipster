@@ -28,7 +28,7 @@ npm install hipster -g
 
 Then
 ```
-hipster filename [options]
+hip filename [options]
 
 --margin     # Set to N >= 2 for line numbers.
 --page       # PageUp/Down jump size.
