@@ -20,8 +20,8 @@ module.exports = function (doc) {
 
     if(rc.margin) { 
       var num = padNum(y, rc.margin - 1)
-      num = num[ y % 2 ? 'yellow' : 'green']
-      y % 10 || (num = num.bold) 
+      num = num[ y % 2 ? 'green' : 'yellow']
+      y % 5 || (num = num.bold) 
       return num + ' ' + line 
     }
 
