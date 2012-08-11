@@ -1,17 +1,24 @@
 # Hipster
- ole,
+
+Okay, so today I wrote a text editor in node.js and named it "hipster". 
+Because I am an asshole. 
 (and no one had already used the name for something more stupid)
 
 I had to cut some corners to get it done in a single day, But it still came out pretty good, 
 I am editing this README with it right now.  
 
-The hardest thing to get right was scrolling, lots of off by one errors.
+## Features
+
+Hipster has modern controls. no modes or silly stuff like that.
+
+* Selection of text (Shift + Arrows)
+* Copy/Paste        (`sudo apt-get install xclip`, on OSX, make a pull request)
+* Typing            (like, duh)
 
 ## Unfeatures
 
-hipster ain't got no:
+Hipster ain't got no:
 
-* Copy/Paste        (use the c/p your OS provides the terminal)
 * Multiple Buffers  (use screen, or tmux)
 * Un Do             (use git)
 * Friendly Warnings (deal with it)
@@ -58,13 +65,13 @@ This module depends on [TooTallNate/keypress](https://github.com/tootallnate/key
 [Marak/colors.js](https://github.com/Marak/colors.js)
 
 But the most important thing is the playful oneupsmanship that exists in the node
-community regarding ansi/terminal art. With out that I would probably not have attempted this.
+community regarding ansi/terminal art. Without that I would probably not have attempted this.
+
 You know who you are!
 
 ## Known Issues
 
-sometimes when scrolling UP very quickly, funny characters get drawn. 
-I didn't have time to figure out why. press Ctrl-R to make them go away.
+Doesn't wrap lines or anything yet.
 
 ## License
 
