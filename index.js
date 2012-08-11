@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 
 var fs = require('fs')
-var rc = require('./config')
-var ls = fs.createWriteStream('./debug.log')
-var Document = require('./document')
+var Document = require('./lib/document')
 var key = require('keypress')
-var render = require('./render')
+var render = require('./lib/render')
 
 key(process.stdin)
 
@@ -23,9 +21,7 @@ function Hipster (rc, doc) {
   render = render(doc, rc)
  
   var hip = {
-
     config: rc,
-
     plugins: [],
 
     //the list of things that want to draw.
@@ -41,6 +37,7 @@ function Hipster (rc, doc) {
       return this
     },
 
+    //call all the plugins, passing them the things they will need.
     init: function () {
       var self = this
       this.plugins.forEach(function (plug) {
@@ -55,7 +52,7 @@ function Hipster (rc, doc) {
   return hip
 }
 
-var hipster = Hipster(require('./config'))
+var hipster = Hipster(require('./lib/config'))
   .use(require('./plugins/basics'))
   .use(require('./plugins/entry'))
   .use(require('./plugins/easy-writer'))
