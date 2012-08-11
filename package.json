@@ -22,7 +22,10 @@
   "scripts": {
     "test": "tap test"
   },
-  "bin": "./index.js",
+  "bin": {
+    "hipster": "./index.js",
+    "hip":     "./index.js"
+  },
   "author": "'Dominic Tarr' <dominic.tarr@gmail.com> (http://dominictarr.com)",
   "license": "MIT"
 }

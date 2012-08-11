@@ -8,7 +8,7 @@ module.exports = Document
 
 function Document() {
   this.row = this.column = 0
-  this.lines = []
+  this.lines = ['\n']
   this.marks = null
 }
 //compare marked positions

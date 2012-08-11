@@ -11,65 +11,8 @@ var key = require('keypress')
 require('colors')
 
 //internal representation of our text file
-var doc = new Document()
-
-var offset = 0 
-var height = rc.height
-var margin = rc.margin
-var page   = rc.page
-var noSave = false
-var log
-
-//default to empty file
-doc.lines = ['\n']
-
-//try and open the file the user past in
-//if it doesn't exit yet, we will write 
-//to it on Ctrl-S
-
-var file = rc._[0] || __dirname+'/README.md', title = file 
-
-try {
-  doc.lines = toLines(fs.readFileSync(file, 'utf-8'))
-  doc.lines.pop()
-} catch (_) { }
-
-if(rc._[0]) title = file
-else        noSave = true, title = 'README'
-
-//setup debugging
-if(!rc.debug)
-  log = console.error = function noop(){}
-
-//log to a file
-else if('string' == typeof rc.debug) {
-  var inspect = require('util').inspect
-  var ds = fs.createWriteStream(rc.debug)
-  log = console.error = function () {
-    ds.write(
-      [].slice.call(arguments)
-        .map(inspect).join(' ')
-      +'\n'
-    )    
-  }
-}
-
-//log to stderr.
-//hipster file 2> debug.log
-else log = console.error 
-
-//set title to hipster - $filename
-process.stdout.
-  write('\x1b]0;hipster - ' + (title) + '\007')
-
 process.on('exit', function () {
   c.reset()
-})
-
-process.on('unhandledException', function (err) {
-  c.reset()
-  console.log(err.stack)
-  process.exit(1)
 })
 
 key(process.stdin)
@@ -77,276 +20,174 @@ key(process.stdin)
 process.stdin.setRawMode(true)
 process.stdin.resume()
 
-function padNum(n, m) {
-  n = '' + n
-  while(n.length < m)
-    n = '0' + n
-  return n.slice(n.length - (m))
-}
+function Hipster (rc, doc) {
 
-function render (line, x, y) {
-  if(!line) return
+var offset = 0 
+var height = rc.height
 
-  //don't render the '\n'
-  line = line.substring(0, line.length - 1)
+var renderers = []
 
-  if(doc.marks) {
-    console.error(doc.marks, y)
-    var m = doc.marks[0]
-    var M = doc.marks[1]
-    var diff = 0
+doc = doc || new Document()
 
-    //if the match starts and ends on the same line
-    if(m.y == M.y && m.y + 1 == y) {
-      var l =[ line.substring(0, m.x), line.substring(m.x, M.x), line.substring(M.x)]
-      console.error(l)
-      l[1] = l[1].cyan.inverse
-      line = l.join('')
-    }
+  var hip = {
 
-    //if we are inbetween the first and last matched lines.
-    else if(m.y + 1 < y && y < M.y + 1) {
-      console.error('INBETWEEN', line)
-      line = line.cyan.inverse
-    }
+    config: rc,
 
-    //if this is the first matched line
-    else if(m.y + 1 == y) {
-      console.error('PREFIX',line.substr(0, m.x), 0, m.x)
-      line = line.substr(0, m.x) + line.substr(m.x).cyan.inverse
-      console.error(JSON.stringify(line))
-    }
+    plugins: [],
 
-    //if this is the last matched line
-    else if(M.y + 1 == y){
-      //if the first mark is on the same line, adjust for that.
-      line = line.substr(0, M.x).cyan.inverse + line.substr(M.x)
+    clear: function () {
+      this.plugins = []
+      return this
+    },
+
+    renderers: renderers,
+
+    use: function (plugin) {
+      if(plugin)
+        this.plugins.push(plugin)
+      return this
+    },
+
+    init: function () {
+      var self = this
+      this.plugins.forEach(function (plug) {
+        plug.call(self, doc, process.stdin, c)
+      })
+      doc.emit('cursor', 1, 1)
+      doc.emit('redraw')
+      return this
     }
   }
 
-  if(margin) {
-    c.background('black')
-      .foreground(y % 2 ? 'yellow' : 'green')
-      .display(y % 10 ? 'dim' : 'bright')
-      .write(padNum(y, margin - 1)) 
-      .display('reset').write(' ')
+  var cache = []
+
+  function render (line, x, y) {
+    if(!line) return
+
+    //don't render the '\n'. this can mess-up escape codes.
+    line = line.substring(0, line.length - 1)
+
+    //iterate over the renderers, each gets to modify the line.
+    renderers.forEach(function (render) {
+      if(!render) return
+      var l = render(line, x, y)
+      if(l) line = l
+    })
+    return line
   }
 
-  c.write(line)
-  .foreground('blue').write('\u266b')
-  .display('reset').write('\n')
-}
+  function updateLine(line, x, y, noErase) {
+    if(y < offset || y > offset + height)
+      return
+    if(!noErase)
+      c.position(1, y - offset).erase('line')
+    line = render(line, x, y)
+    c.write(line).display('reset').write('\n')
+  }
 
-function toLines(data) {
-  return data.split('\n').map(function (e, i, a) {
-    //add '\n' to every line but the last one.
-    return i + 1 < a.length ? e + '\n' : e
-  })
-}
+  function redraw (_, x, y) {
+    c.reset()
+    for (var i = offset; i < offset + height && doc.lines[i]; i++)
+      if(i < doc.lines.length) updateLine(doc.lines[i], x, i + 1, true)
+  }
+  function eraseLine (line, x, y) {
+    c.position(1, y - offset).erase('line')
+  }
 
-//press a key, and need to figure out what column your in
-//insert mode.
-c.insert(true)
-
-doc.on('new_line', function (line, x, y) {
-  log('NEW', x, y, line)
-  c.position(1, y - offset)
-  .insert('line')
-    .erase('line')
-  render(line, x, y)
-})
-
-doc.on('redraw', function (_, x, y) {
-  c.reset()
-  c.position(1,1)
-  for (var i = offset; i < offset + height && doc.lines[i]; i++)
-    if(i < doc.lines.length) render(doc.lines[i], x, i + 1)
-  c.position(1,1)
-})
-
-doc.on('delete_line', function (line, x, y) {
-  log('DELETE', y, line)
-//  if(doc.column != y)
+  function deleteLine (line, x, y) {
     c.position(1, y - offset)
-  c.delete('line')
-})
-
-function updateMark (min, max) {
-  console.error('MARK CHANGE', min, max)
-  //update lines between marks, that are on screen.
-  for(var i = min.y; i <= max.y; i ++)
-    doc.emit('update_line', doc.lines[i], 1, i+1)
-//  doc.emit('update_line', doc.lines[max.y], 1, max.y+1)
-  doc.move()
-}
-
-doc.on('mark', updateMark)
-doc.on('unmark', updateMark)
-
-
-//'when the document is shortened, clear the last line
-
-doc.on('erase_line', function (line, x, y) {
-  log('ERASE', y, line)
-  c.position(1, y - offset).erase('line')
-})
-
-doc.on('cursor', function (line, x, y) {
-  c.position(x, y - offset)
-})
-
-doc.on('update_line', function(line, x, y) {
-  log('UPDATE', x, y, line)
-  c.position(1, y - offset)
-    .erase('line')
-  render(line, x, y)
-})
-
-doc.on('new_line', function () {
-  doc.emit('erase_line', 
-    doc.lines[offset + height], 1, offset + height + 1)
-})
-
-doc.on('delete_line', function () {
-  //redraw the last line on the window.
-  doc.emit('update_line', 
-    doc.lines[offset + height], 1, offset + height) 
-})
-
-c.cursor(true).reset()
-
-function scroll (line, x, y) {
-  var target = offset
-  //there is an off by one error in here somewhere.
-  //when I scroll down,
-  if (y - (offset + height) > 0) 
-    target = y - height
-  else if (y - offset<= 0) 
-    target = y - 1
-
-  //if there was lots of scrolling, redraw the whole screen
-  if(Math.abs(target - offset) >= page) {
-    offset = target
-    return doc.emit('redraw')
+     .delete('line')
+    //'when the document is shortened, clear the last line
+    updateLine(doc.lines[offset + height], 1, offset + height) 
   }
 
-  //there are event listeners that pop off the lines at the other end
-  //when scrolling happens.
-  if(target != offset) {
-    var sa = Math.abs(target - offset)
-    var i = 1 
-    while(offset !== target) {
-      if(target > offset) {
-        //scrolling down, delete line from TOP.
-        doc.emit('delete_line', '', 1, 1 + offset)
-        offset ++
-      } 
-      else if(target < offset){
-        //scrolling up, add line to top.
-        doc.emit('new_line', doc.lines[offset - 1], 1, offset)
-        offset --
-      }
-    } while(offset !== target);
+  function smaller (m, M) {
+    if(!m) return false
+    return m.y < M.y ? true : m.x < M.x
   }
-}
 
-//cursor has moved.
-doc.on('cursor', function (line, x, y) {
-  scroll(line, x, y)
-  c.position(x + margin, y - offset)
-})
-
-var shift = false
-process.stdin.on('keypress', function (ch, key) {
-
-    //if it's shifted, _and_ they have pressed a directional key...
-    if(key.shift) {
-      if(!shift) doc.unmark()
-      shift = true
-      doc.mark()
-    } else if (shift)
-      shift = false
-
-    if(!key.ctrl) {
-
-      if(key.name == 'up'   ) 
-        (doc.isFirstLine() ? doc.start() : doc.up()).move()
-      if(key.name == 'down' )   
-        (doc.isLastLine() ? doc.end() : doc.down()).move()
-
-      if(key.name == 'left' )
-        ((doc.isFirst() && !doc.isFirstLine() ? doc.up().end() : doc.left())).move()
-
-      if(key.name == 'right') 
-        ((doc.isLast() && !doc.isLastLine() ? doc.down().start() : doc.right())).move()
-
-      if(key.name == 'end') doc.end().move()
-      if(key.name == 'home') doc.start().move()
-
-  } else if ( key.ctrl ) {
-
-    if(key.name == 'left' ) {
-      //go to start of previous word
-      doc.prev().move()  
- 
-    }
-    if(key.name == 'right') {
-      //go to end of next word
-      doc.next().move()  
-    }
-
-    //start of the previous non whitespace line.
-    if(key.name == 'up')
-      doc.prevSection().start().move()
-    
-    //start of the previous non whitespace line.
-    if(key.name == 'down') {
-      if(doc.isLastLine()) doc.end()
-      else doc.nextSection().start()
-      doc.move() 
-    }
-
-    if(key.name == 'end') doc.firstLine().start().move()
-    if(key.name == 'home') doc.lastLine().end().move()
-  }
-  
-  if(key.name == 'pageup') {
-      doc.row = Math.max(doc.row - page, 0)
-      doc.move()
-  }
-  if(key.name == 'pagedown') {
-    doc.row = Math.min(doc.row + page, doc.lines.length - 1)
+  var _min, _max
+  function updateMark (min, max) {
+    var m = smaller(_min, min) ? _min : min
+    var M = smaller(_max, max) ? _max : max
+    for(var i = m.y; i <= M.y; i ++)
+      updateLine(doc.lines[i], 1, i+1)
     doc.move()
+    _min = min; _max = max
   }
 
-  //mark the new position if we have moved
-  if(key.shift)
-    doc.mark()
+  function newLine (line, x, y) {
+    eraseLine('', 1, offset + height + 1)
+    c.position(1, y - offset)
+      .insert('line')
+    render(line, x, y)
+  }
 
-  if(key.shift && key.name.length === 1)
-    key.name = key.name.toUpperCase()
+  doc.on('update_line', updateLine)
+  doc.on('redraw', redraw)
+  doc.on('new_line', newLine)
+  doc.on('mark', updateMark)
+  doc.on('unmark', updateMark)
+  doc.on('delete_line', deleteLine) 
 
-  c.display('reset')
-  if(key.ctrl) {
+  //cursor has moved.
+  doc.on('cursor', function (line, x, y) {
+    scroll(line, x, y)
+    c.position(x + rc.margin, y - offset)
+  })
 
-    if(key.name == 's' && !noSave)
-      return fs.writeFileSync(file, doc.lines.join(''), 'utf-8')
-    if(key.name == 'r')
-      return doc.emit('redraw')
-    if(key.name == 'd')
-      return console.error(doc.lines)
-    if(key.name == 'q') {
-      c.reset()
-      process.stdin.pause()
+  c.cursor(true).reset()
+
+  function scroll (line, x, y) {
+    var target = offset
+    //there is an off by one error in here somewhere.
+    //when I scroll down,
+    if (y - (offset + height) > 0) 
+      target = y - height
+    else if (y - offset<= 0) 
+      target = y - 1
+
+    //if there was lots of scrolling, redraw the whole screen
+    if(Math.abs(target - offset) >= rc.page) {
+      offset = target
+      return redraw()
+    }
+
+    //there are event listeners that pop off the lines at the other end
+    //when scrolling happens.
+    if(target != offset) {
+      var sa = Math.abs(target - offset)
+      var i = 1 
+      while(offset !== target) {
+        if(target > offset) {
+          //scrolling down, delete line from TOP.
+          deleteLine('', 1, 1 + offset)
+          offset ++
+        } 
+        else if(target < offset){
+          //scrolling up, add line to top.
+          newLine(doc.lines[offset - 1], 1, offset)
+          offset --
+        }
+      } while(offset !== target);
     }
   }
 
-  if     (key.name == 'delete')    doc.delete(1)
-  else if(key.name == 'backspace') doc.delete(-1)
-  else if(key.name == 'enter')     doc.newline()
-  else if(key.name == 'tab')       doc.write('  ') 
-  else if(' ' <= ch && ch <= '~') doc.write(ch)
-})
+  return hip
+}
 
-doc.emit('redraw', '', 1, 1)
-doc.emit('cursor', '', 1, 1)
+var hipster = Hipster(require('./config'))
+  .use(require('./plugins/basics'))
+  .use(require('./plugins/entry'))
+  .use(require('./plugins/easy-writer'))
+  .use(require('./plugins/movement'))
+  .use(require('./plugins/selection')) //MUST come after movement.
+  .use(require('./plugins/line-nums')) //MUST come after selection.
+  .use(require('./plugins/control'))
+  .init()
+
+
+
+
+
+
