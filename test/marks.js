@@ -51,3 +51,11 @@ console.log(doc.getMarked())
 doc.clearMarked()
 assert.equal(doc.lines[0], 'second line\n')
 
+//delete multiple lines at once.
+doc.lines = orig.slice()
+doc.unmark().mark(5, 0).mark(5, 2)
+assert.equal(doc.getMarked(), ' line\nsecond line\nthird')
+doc.clearMarked()
+console.log(doc.lines)
+assert.equal(doc.lines[0], 'first line\n')
+
