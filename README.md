@@ -1,6 +1,5 @@
 # Hipster
-
-Okay, so today I wrote a text editor in node.js and named it `hipster` because I am an asshole,
+ ole,
 (and no one had already used the name for something more stupid)
 
 I had to cut some corners to get it done in a single day, But it still came out pretty good, 

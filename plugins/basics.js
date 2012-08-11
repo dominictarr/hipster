@@ -4,9 +4,6 @@ module.exports = function (doc, _, cursor) {
   var join = require('path').join
   var rc = this.config
 
-  cursor.
-    write('\x1b]0;hipster - ' + (title) + '\007')
-
   //if an argument was specified, pass it in
   var file = rc._[0] || rc.file || 
     join(__dirname, '..', 'README.md'), title = file
@@ -29,8 +26,11 @@ module.exports = function (doc, _, cursor) {
     doc.lines.pop()
   } catch (_) { }
 
-  if(rc._[0]) title = file
+  if(rc.file) title = file
   else        rc.noSave = true, title = 'README'
+
+  cursor.
+    write('\x1b]0;hipster - ' + (title) + '\007')
 
   //setup debugging
   if(!rc.debug)

@@ -10,7 +10,7 @@ key(process.stdin)
 process.stdin.setRawMode(true)
 process.stdin.resume()
 
-module.exports = hipster
+module.exports = Hipster
 
 function Hipster (rc, doc) {
 
@@ -60,9 +60,9 @@ if(!module.parent)
     .use(require('./plugins/basics'))
     .use(require('./plugins/entry'))
     .use(require('./plugins/easy-writer'))
+    .use(require('./plugins/control'))
     .use(require('./plugins/movement'))
     .use(require('./plugins/selection')) //MUST come after movement.
     .use(require('./plugins/line-nums')) //MUST come after selection.
-    .use(require('./plugins/control'))
     .init()
 
