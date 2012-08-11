@@ -1,7 +1,7 @@
 
 //Ctrl-$X keys for controling hipster itself.
 
-module.exports = function (doc, keys, cursor) {
+module.exports = function (doc, keys, render) {
 
   var rc = this.config
   var fs = require('fs')
@@ -44,11 +44,11 @@ module.exports = function (doc, keys, cursor) {
           })
       }
       if(key.name == 'r')
-        return doc.emit('redraw')
+        return render.redraw()
       if(key.name == 'd')
         return console.error(doc.lines)
       if(key.name == 'q') {
-        cursor.reset()
+        render.reset()
         process.stdin.pause()
         process.exit()
       }
