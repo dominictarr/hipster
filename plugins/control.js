@@ -36,7 +36,7 @@ module.exports = function (doc, keys, cursor) {
           doc.getMarked())
         doc.clearMarked()
       }
-      if(key.name == 'p') {
+      if(key.name == 'p' || key.name == 'v') {
         doc.clearMarked()
         send(['xclip', '-o', '-selection', 'clipboard'], '',
           function (_, paste) {   
