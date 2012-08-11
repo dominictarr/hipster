@@ -10,6 +10,8 @@ key(process.stdin)
 process.stdin.setRawMode(true)
 process.stdin.resume()
 
+module.exports = hipster
+
 function Hipster (rc, doc) {
 
   var offset = 0 
@@ -52,13 +54,15 @@ function Hipster (rc, doc) {
   return hip
 }
 
-var hipster = Hipster(require('./lib/config'))
-  .use(require('./plugins/basics'))
-  .use(require('./plugins/entry'))
-  .use(require('./plugins/easy-writer'))
-  .use(require('./plugins/movement'))
-  .use(require('./plugins/selection')) //MUST come after movement.
-  .use(require('./plugins/line-nums')) //MUST come after selection.
-  .use(require('./plugins/control'))
-  .init()
+if(!module.parent)
+
+  Hipster(require('./lib/config'))
+    .use(require('./plugins/basics'))
+    .use(require('./plugins/entry'))
+    .use(require('./plugins/easy-writer'))
+    .use(require('./plugins/movement'))
+    .use(require('./plugins/selection')) //MUST come after movement.
+    .use(require('./plugins/line-nums')) //MUST come after selection.
+    .use(require('./plugins/control'))
+    .init()
 
