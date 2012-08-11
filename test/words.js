@@ -59,4 +59,13 @@ console.log('# empty string')
 assert.equal(w.next('', 0), null)
 assert.equal(w.prev('', 0), null)
 
+//current word returns the current word
+
+//wordEnd moves to the end of the current word.
+
+str = '#aaaaa bbbb cc d\n'
+
+assert.equal(w.wordEnd(str, 4), 6)
+assert.equal(w.wordEnd(str, 6), 11)
+assert.equal(w.wordEnd(str, 0), 6)
 
