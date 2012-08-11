@@ -16,7 +16,7 @@ module.exports = function (doc, keys, cursor) {
       c.stdout.on('end', function () { cb(null, output) })
     }
     c.on('error', function () {})
-    if(write) c.stdin.write(write)
+    c.stdin.write(write || '')
     c.stdin.end()
   }
 
@@ -50,6 +50,7 @@ module.exports = function (doc, keys, cursor) {
       if(key.name == 'q') {
         cursor.reset()
         process.stdin.pause()
+        process.exit()
       }
     }
 
