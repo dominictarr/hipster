@@ -1,4 +1,4 @@
-var w = require('../words')
+var w = require('../lib/words')
 var assert = require('assert')
 
 var str = '#aaaaa bbbb cc d\n'
