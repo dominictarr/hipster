@@ -29,7 +29,7 @@ module.exports = function (doc, keys, cursor) {
   function endSelection (ch, key) {
     if(key.shift)
       doc.mark()
-    else
+    else  if(/up|down|left|right|pageup|pagedown|home|end/.test(key.name))
       doc.unmark()
   }
 
