@@ -45,8 +45,12 @@ module.exports = function (doc, keys, render) {
       }
       if(key.name == 'r')
         return render.redraw()
+      //delete current line
       if(key.name == 'd')
-        return console.error(doc.lines)
+        return doc.start().deleteLines(doc.row, 1).move()
+      //select current line
+      if(key.name == 'l')
+        doc.start().mark().down().mark().move()
       if(key.name == 'q') {
         render.reset()
         process.stdin.pause()
