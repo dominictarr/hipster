@@ -22,8 +22,8 @@ module.exports = function (doc, keys, cursor) {
       else if(key.ctrl) doc.mark().prev().mark().clearMarked()
       else          doc.delete(-1)
     }
-    else if(key.name == 'enter')     doc.newline()
     else if(key.name == 'tab')       doc.write('  ') 
-    else if(' ' <= ch && ch <= '~')  doc.write(ch)
+    else if(key.name == 'enter')     doc.clearMarked().newline()
+    else if(' ' <= ch && ch <= '~')  doc.clearMarked().write(ch)
   })
 }
