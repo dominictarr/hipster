@@ -1,5 +1,5 @@
 
-module.exports = function (doc) {
+module.exports = function (doc, _, render) {
 
 // EasyWriter is probably the coolest text-editor ever.
 // it's name is a reference to the film 'Easy Rider'
@@ -16,6 +16,11 @@ module.exports = function (doc) {
 // http://www.webcrunchers.com/stories/easywriter.html
 
   require('colors')//make sure we have colors
+
+  var rc = this.config
+
+  render.
+    write('\x1b]0;\u266b ' + (rc.title || 'README') + '\007')
 
   this.renderers.push(function (line) {
     return line + '\u266b'.blue

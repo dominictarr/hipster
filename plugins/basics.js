@@ -29,8 +29,10 @@ module.exports = function (doc, _, cursor) {
   if(rc.file) title = file
   else        rc.noSave = true, title = 'README'
 
+  rc.title = rc.title || title
+
   cursor.
-    write('\x1b]0;hipster - ' + (title) + '\007')
+    write('\x1b]0;hip - ' + (rc.title) + '\007')
 
   //setup debugging
   if(!rc.debug)
