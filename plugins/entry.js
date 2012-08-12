@@ -19,7 +19,8 @@ module.exports = function (doc, keys, cursor) {
     }
     else if(key.name == 'backspace') {
       if(doc.marks) doc.clearMarked()
-      else if(key.ctrl) doc.mark().prev().mark().clearMarked()
+      //quirk in keypress... TODO should make fix.
+      else if(key.ctrl || key.sequence == '\b') doc.mark().prev().mark().clearMarked()
       else          doc.delete(-1)
     }
     else if(key.name == 'tab')       doc.write('  ') 
