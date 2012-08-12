@@ -47,13 +47,19 @@ you should too.
 
 ## Controls
 
- * Ctrl-S      - Save.
- * Ctrl-Q      - Quit.
- * Ctrl-R      - Redraw Screen.
- * Arrow       - Slow Movement.
- * Ctrl-Arrows - Fast Movement.
+ * Arrows         - Slow Movement.
+ * Ctrl-Arrows    - Fast Movement.
+ * Shift-Movement - Select text
+ * Ctrl-C         - Copy
+ * Ctrl-X         - Cut
+ * Ctrl-P,V       - Paste
+ * Tab            - Indent   (to selected lines)
+ * Shift-Tab      - Unindent (to selected lines)
+ * Ctrl-R         - Redraw Screen.
+ * Ctrl-S         - Save.
+ * Ctrl-Q         - Quit.
 
-## Prefured Terminals
+## Preferred Terminals
 
 Some terminals interfere with Modifier keys. I've found the XTerm works best. 
 If you use fancy terminals that have tabs and stuff then you may have trouble
