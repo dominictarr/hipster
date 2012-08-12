@@ -20,6 +20,7 @@ module.exports = function (doc, keys) {
 
     // apply indentation to selected lines.
     if(doc.marks) {
+      console.error('INDENT SELECTION')
       var m = doc.marks[0]
       var M = doc.marks[1]
 
@@ -28,9 +29,30 @@ module.exports = function (doc, keys) {
           (key.shift ? deindent : indent) (doc.lines[i])
         )
       }
-      key.name = 'VETOED'
+    
+    }
+    else {
+      //pad current line to an even number of spaces.
+      var m 
+      var i = (m = /^\s*/.exec(doc.line()))[0].length
+      console.error('INDENT SINGLE LINE', i, m)
+
+      doc.pos(i, doc.row) //move to the end of the indentation.
+              
+      if(!key.shift)
+        doc.write(i % 2 ? ' ' : '  ')
+      else  if(i) doc.delete(i % 2 ? -1 : -2)
+
+      // add spaces.
+//      else
+//        doc.updateLine(doc.row, (i % 2 ? ' ' : '  ') + doc.line())
+
+//      doc.move()//something is putting the cursor in the wrong place.
     }
 
+    //Refactor this when there is another command that needs to veto something.
+    //vvv TOTALLY HIDEOUS WAY TO PREVENT OTHER COMMANDS TRIGGERING.
+     key.name = 'VETOED'
   })
-
 }
+
