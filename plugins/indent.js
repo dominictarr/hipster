@@ -34,7 +34,7 @@ module.exports = function (doc, keys) {
     else {
       //pad current line to an even number of spaces.
       var m 
-      var i = (m = /^\s*/.exec(doc.line()))[0].length
+      var i = (m = /^[ \t]*/.exec(doc.line()))[0].length
       console.error('INDENT SINGLE LINE', i, m)
 
       doc.pos(i, doc.row) //move to the end of the indentation.
