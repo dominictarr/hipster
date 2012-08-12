@@ -19,7 +19,7 @@ Hipster has modern controls. no modes or silly stuff like that.
 
 Hipster ain't got no:
 
-* Multiple Buffers  (use screen, or tmux)
+* Multiple Buffers  (use screen, [tmux interferes with controls too much])
 * Un Do             (use git)
 * Friendly Warnings (deal with it)
 
@@ -52,6 +52,12 @@ you should too.
  * Ctrl-R      - Redraw Screen.
  * Arrow       - Slow Movement.
  * Ctrl-Arrows - Fast Movement.
+
+## Prefured Terminals
+
+Some terminals interfere with Modifier keys. I've found the XTerm works best. 
+If you use fancy terminals that have tabs and stuff then you may have trouble
+selecting text with key combinations like `Ctrl-Shift-Up/Down`.
 
 ## See Also
 
