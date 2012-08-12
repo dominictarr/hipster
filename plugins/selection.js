@@ -16,9 +16,12 @@ module.exports = function (doc, keys, cursor) {
   keys.removeAllListeners('keypress')
 
   function startSelection (ch, key) {
+    //only start selection if it's a movement key.
+    if(/up|down|left|right|pageup|pagedown|home|end/.test(key.name))
+      key.movement = true
 
       //if it's shifted, _and_ they have pressed a directional key...
-      if(key.shift) {
+      if(key.shift && key.movement) {
         if(!shift) doc.unmark()
         shift = true
         doc.mark()
@@ -27,10 +30,11 @@ module.exports = function (doc, keys, cursor) {
   }
 
   function endSelection (ch, key) {
-    if(key.shift)
-      doc.mark()
-    else  if(/up|down|left|right|pageup|pagedown|home|end/.test(key.name))
-      doc.unmark()
+    if(key.movement)
+      if(key.shift)
+        doc.mark().move()
+      else  if(/up|down|left|right|pageup|pagedown|home|end/.test(key.name))
+        doc.unmark()
   }
 
   keys.on('keypress', startSelection)
