@@ -58,6 +58,7 @@ if(!module.parent)
 
   Hipster(require('./lib/config'))
     .use(require('./plugins/basics'))
+    .use(require('./plugins/indent'))
     .use(require('./plugins/entry'))
     .use(require('./plugins/easy-writer'))
     .use(require('./plugins/control'))
