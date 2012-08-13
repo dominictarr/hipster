@@ -44,7 +44,7 @@ module.exports = function (doc, keys, render) {
           })
       }
       if(key.name == 'r')
-        return render.redraw()
+        return render.redraw(), doc.move()
       //delete current line
       if(key.name == 'd')
         return doc.start().deleteLines(doc.row, 1).move()
