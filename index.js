@@ -14,14 +14,14 @@ module.exports = Hipster
 
 function Hipster (rc, doc) {
 
-  var offset = 0 
+  var offset = 0
   var height = rc.height
 
   //internal representation of our text file
   doc = doc || new Document()
- 
+  
   render = render(doc, rc)
- 
+  
   var hip = {
     config: rc,
     plugins: [],
@@ -66,6 +66,6 @@ if(!module.parent)
     .use(require('./plugins/control'))
     .use(require('./plugins/movement'))
     .use(require('./plugins/selection')) //MUST come after movement.
-//    .use(require('./plugins/line-nums')) //MUST come after selection.
+    .use(require('./plugins/line-nums')) //MUST come after selection.
     .init()
 

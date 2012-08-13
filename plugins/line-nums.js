@@ -16,13 +16,13 @@ module.exports = function (doc) {
     return n.slice(n.length - (m))
   }
 
-  this.renderers.push(function (line, x, y) {
+  this.renderers.push(function (q, x, y) {
 
     if(rc.margin) { 
       var num = padNum(y, rc.margin - 1)
       num = num[ y % 2 ? 'green' : 'yellow']
       y % 5 || (num = num.bold) 
-      return num + ' ' + line 
+      q.insertBefore(0 ,num + ' ')
     }
 
   })
