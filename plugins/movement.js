@@ -43,8 +43,8 @@ module.exports = function (doc, keys, cursor) {
         doc.move() 
       }
 
-      if(key.name == 'end') doc.firstLine().start().move()
-      if(key.name == 'home') doc.lastLine().end().move()
+      if(key.name == 'home') doc.firstLine().start().move()
+      if(key.name == 'end') doc.lastLine().end().move()
     }
     
     if(key.name == 'pageup') {
