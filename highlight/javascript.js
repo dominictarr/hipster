@@ -21,8 +21,8 @@ exports.highlight = function (q) {
   q.wrap(keyword    , styles.cyan)
   q.wrap(rbrace     , styles.brightGrey)
   q.wrap(sbrace     , styles.yellow)
-  q.wrap(cbrace     , styles.brightYellow)
-  q.wrap(number     , styles.green)
+  q.wrap(cbrace     , styles.green)
+  q.wrap(number     , styles.brightMagenta)
   q.wrap(string     , styles.red)
   q.wrap(primitive  , styles.magenta)
   q.wrap(comment    , styles.blue)
@@ -30,5 +30,6 @@ exports.highlight = function (q) {
 }
 
 exports.test = function (file) {
+  return true
   return /\.(json|js)$/.test(file)
 }
