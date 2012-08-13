@@ -1,5 +1,7 @@
 module.exports = function (doc, keys, cursor) {
 
+  var styles = require('../lib/styles')
+
   //wether or not we are currently selecting text 
   var shift = false
 
@@ -46,7 +48,7 @@ module.exports = function (doc, keys, cursor) {
   keys.on('keypress', endSelection)
 
 
-  this.renderers.push(function (line, x, y) {
+  this.renderers.push(function (q, x, y) {
 
     if(doc.marks) {
       console.error(doc.marks, y)
@@ -56,31 +58,31 @@ module.exports = function (doc, keys, cursor) {
 
       //if the match starts and ends on the same line
       if(m.y == M.y && m.y + 1 == y) {
-        var l =[ line.substring(0, m.x), line.substring(m.x, M.x), line.substring(M.x)]
-        console.error(l)
-        l[1] = l[1].cyan.inverse
-        line = l.join('')
+        q.insertAfter (m.x, styles.inverse[0])
+        q.insertBefore(M.x, styles.inverse[1])
+
       }
 
       //if we are inbetween the first and last matched lines.
       else if(m.y + 1 < y && y < M.y + 1) {
-        line = line.cyan.inverse
+
+        q.insertAfter (0, styles.inverse[0])
+        q.insertBefore(q.toString().length, styles.inverse[1])
       }
 
       //if this is the first matched line
       else if(m.y + 1 == y) {
-        line = line.substr(0, m.x) + line.substr(m.x).cyan.inverse
-        console.error(JSON.stringify(line))
+        q.insertAfter (m.x, styles.inverse[0])
+        q.insertBefore(q.toString().length, styles.inverse[1])
       }
 
-      //if this is the last matched line
-      else if(M.y + 1 == y){
+      //if this is the last matched line (but highligh if x=0)
+      else if(M.y + 1 == y && M.x){
         //if the first mark is on the same line, adjust for that.
-        line = line.substr(0, M.x).cyan.inverse + line.substr(M.x)
+        q.insertAfter (0, styles.inverse[0])
+        q.insertBefore(M.x, styles.inverse[1])
       }
     }
-
-    return line
 
   })
 

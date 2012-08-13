@@ -28,7 +28,7 @@ function Hipster (rc, doc) {
 
     //the list of things that want to draw.
     renderers: render.renderers,
- 
+
     //the thing that owns drawing. 
     render: render,
 
@@ -61,10 +61,11 @@ if(!module.parent)
     .use(require('./plugins/indent'))
     .use(require('./plugins/comment'))
     .use(require('./plugins/entry'))
+    .use(require('./plugins/highlight'))
     .use(require('./plugins/easy-writer'))
     .use(require('./plugins/control'))
     .use(require('./plugins/movement'))
     .use(require('./plugins/selection')) //MUST come after movement.
-    .use(require('./plugins/line-nums')) //MUST come after selection.
+//    .use(require('./plugins/line-nums')) //MUST come after selection.
     .init()
 
