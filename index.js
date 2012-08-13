@@ -14,9 +14,6 @@ module.exports = Hipster
 
 function Hipster (rc, doc) {
 
-  var offset = 0
-  var height = rc.height
-
   //internal representation of our text file
   doc = doc || new Document()
   
@@ -46,7 +43,6 @@ function Hipster (rc, doc) {
         plug.call(self, doc, process.stdin, render)
       })
       render.redraw()
-      render.cursor(1, 1)
       return this
     }
   }
@@ -58,6 +54,7 @@ if(!module.parent)
 
   Hipster(require('./lib/config'))
     .use(require('./plugins/basics'))
+//    .use(require('./plugins/lines'))
     .use(require('./plugins/indent'))
     .use(require('./plugins/comment'))
     .use(require('./plugins/entry'))
