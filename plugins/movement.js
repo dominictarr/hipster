@@ -24,12 +24,18 @@ module.exports = function (doc, keys, cursor) {
 
       if(key.name == 'left' ) {
         //go to start of previous word
-        doc.prev().move()  
+        if(doc.isFirst())
+          doc.up().end().move()
+        else
+          doc.prev().move()  
    
       }
       if(key.name == 'right') {
         //go to end of next word
-        doc.next().move()  
+        if(doc.isLast())
+          doc.down().start().move()
+        else
+          doc.next().move()  
       }
 
       //start of the previous non whitespace line.
