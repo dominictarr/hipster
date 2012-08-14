@@ -54,7 +54,7 @@ if(!module.parent)
 
   Hipster(require('./lib/config'))
     .use(require('./plugins/basics'))
-//    .use(require('./plugins/lines'))
+    .use(require('./plugins/lines'))
     .use(require('./plugins/indent'))
     .use(require('./plugins/comment'))
     .use(require('./plugins/entry'))
