@@ -2,7 +2,7 @@
 
 var fs = require('fs')
 var Document = require('./lib/document')
-var key = require('keypress')
+var keys = require('./lib/keys')
 var render = require('./lib/render')
 var es = require('event-stream')
 
@@ -67,7 +67,7 @@ function Hipster (rc, doc) {
     init: function () {
       var self = this
       this.plugins.forEach(function (plug) {
-        plug.call(self, doc, input, render)
+      plug.call(self, doc, keys, render)
       })
       render.redraw()
       return this
