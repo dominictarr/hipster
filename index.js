@@ -2,10 +2,8 @@
 
 var fs = require('fs')
 var Document = require('./lib/document')
-var key = require('keypress')
+var keys = require('./lib/keys')
 var render = require('./lib/render')
-
-key(process.stdin)
 
 process.stdin.setRawMode(true)
 process.stdin.resume()
@@ -40,7 +38,7 @@ function Hipster (rc, doc) {
     init: function () {
       var self = this
       this.plugins.forEach(function (plug) {
-        plug.call(self, doc, process.stdin, render)
+        plug.call(self, doc, keys, render)
       })
       render.redraw()
       return this
