@@ -8,6 +8,17 @@ module.exports = function (doc, _, cursor) {
   var file = rc._[0] || rc.file || 
     join(__dirname, '..', 'README.md'), title = file
 
+  if(rc.v || rc.version) {
+    console.log(require('../package.json').version)
+    process.exit(0)
+  }
+
+  //clear the screen after exiting
+  process.on('exit', function () {
+    cursor.reset()
+  })
+
+
   rc.file = file
 
   function toLines(data) {
