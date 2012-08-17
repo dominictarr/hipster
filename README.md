@@ -4,7 +4,8 @@ Okay, so today I wrote a text editor in node.js and named it "hipster".
 Because I am an asshole. 
 (and no one had already used the name for something more stupid)
 
-I had to cut some corners to get it done in a single day, But it still came out pretty good, 
+I had to cut some corners to get it done in a single day,  
+But it still came out pretty good,  
 I am editing this README with it right now.  
 
 ## Features
