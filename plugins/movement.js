@@ -1,24 +1,43 @@
 
 module.exports = function (doc, keys, cursor) {
   var rc = this.config
+  var preferred = 0
+
+  function pref () {
+    preferred = doc.column
+    console.error('PREFERRED COLUMN', preferred)
+  }
+  function toPref() {
+    if('undefined' === typeof preferred) doc.move()
+    if(doc.line().length < preferred)
+      doc.column = doc.line().length - 1
+    else
+      doc.column = preferred
+    doc.move()
+  }
+
   keys.on('keypress', function (ch, key) {
 
       if(!key.ctrl) {
 
-        if(key.name == 'up'   ) 
-          (doc.isFirstLine() ? doc.start() : doc.up()).move()
-
-        if(key.name == 'down' )   
-          (doc.isLastLine() ? doc.end() : doc.down()).move()
-
-        if(key.name == 'left' )
+        if(key.name == 'up'   ) {
+          (doc.isFirstLine() ? doc.start() : doc.up())
+          toPref()
+        }
+        if(key.name == 'down' ) {
+          (doc.isLastLine() ? doc.end() : doc.down())
+          toPref()
+        }
+        if(key.name == 'left' ) {
           ((doc.isFirst() && !doc.isFirstLine() ? doc.up().end() : doc.left())).move()
-
-        if(key.name == 'right') 
+          pref()
+        }
+        if(key.name == 'right') {
           ((doc.isLast() && !doc.isLastLine() ? doc.down().start() : doc.right())).move()
-
-        if(key.name == 'end') doc.end().move()
-        if(key.name == 'home') doc.start().move()
+          pref()
+        }
+        if(key.name == 'end') doc.end().move(), pref()
+        if(key.name == 'home') doc.start().move(), pref()
 
     } else if ( key.ctrl ) {
 
@@ -28,7 +47,7 @@ module.exports = function (doc, keys, cursor) {
           doc.up().end().move()
         else
           doc.prev().move()  
-   
+        pref()
       }
       if(key.name == 'right') {
         //go to end of next word
@@ -36,6 +55,7 @@ module.exports = function (doc, keys, cursor) {
           doc.down().start().move()
         else
           doc.next().move()  
+        pref()
       }
 
       //start of the previous non whitespace line.
