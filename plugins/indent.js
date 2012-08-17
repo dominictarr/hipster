@@ -37,6 +37,10 @@ module.exports = function (doc, keys) {
       var i = (m = /^[ \t]*/.exec(doc.line()))[0].length
       console.error('INDENT SINGLE LINE', i, m)
 
+      //only indentation if we are at the start of the line.
+      //else allow entry to insert spaces!
+      if(i < doc.column) return
+
       doc.pos(i, doc.row) //move to the end of the indentation.
               
       if(!key.shift)
