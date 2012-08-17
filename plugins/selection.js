@@ -36,7 +36,7 @@ module.exports = function (doc, keys, cursor) {
       if(key.shift)
         doc.mark().move()
       else  if(/up|down|left|right|pageup|pagedown|home|end/.test(key.name))
-        doc.unmark()
+        doc.unmark().move()
   }
 
   keys.on('keypress', startSelection)
