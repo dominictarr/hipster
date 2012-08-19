@@ -51,6 +51,7 @@ you should too.
  * Arrows         - Slow Movement.
  * Ctrl-Arrows    - Fast Movement.
  * Shift-Movement - Select text
+ * Ctrl-F         - Search forwards for text
  * Ctrl-C         - Copy
  * Ctrl-X         - Cut
  * Ctrl-P,V       - Paste
