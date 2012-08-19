@@ -6,6 +6,9 @@ var types = [
 module.exports = function () {
 
   var rc = this.config
+
+  if(rc.highlighting === false)
+    return
   
   var file = rc.file
 
