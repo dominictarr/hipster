@@ -19,6 +19,8 @@ module.exports = function (doc, _, render) {
 
   var rc = this.config
 
+  if(rc.showEnding === false) return
+
   render.
     write('\x1b]0;\u266b ' + (rc.title || 'README') + '\007')
 
