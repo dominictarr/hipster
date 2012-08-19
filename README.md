@@ -24,8 +24,7 @@ Hipster ain't got no:
 * Un Do             (use git)
 * Friendly Warnings (deal with it)
 
-This module is only ~500 lines of evented js. 
-Will be easy to add these so-called "features" as plugins.
+Will be easy to implement these so-called "features" as plugins.
 
 ## Usage
 
