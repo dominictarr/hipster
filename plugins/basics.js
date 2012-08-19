@@ -18,7 +18,8 @@ module.exports = function (doc, _, cursor) {
   function toLines(data) {
     return data.split('\n').map(function (e, i, a) {
       //add '\n' to every line but the last one.
-      return i + 1 < a.length ? e + '\n' : e
+//      return i + 1 < a.length ? e + '\n' : e
+      return e + '\n'
     })
   }
 
@@ -28,7 +29,7 @@ module.exports = function (doc, _, cursor) {
 
   try {
     doc.lines = toLines(fs.readFileSync(file, 'utf-8'))
-    doc.lines.pop()
+    var last = doc.lines.pop()
   } catch (_) { }
 
   if(rc.file) title = file
@@ -61,4 +62,3 @@ module.exports = function (doc, _, cursor) {
   else log = console.error 
 
 }
-
