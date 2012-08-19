@@ -11,7 +11,8 @@
     "keypress": "~0.0.2",
     "rc": "0.0.3",
     "colors": "~0.6.0-1",
-    "insert-queue": "0.0.3"
+    "insert-queue": "0.0.3",
+    "event-stream": "~3.0.1"
   },
   "devDependencies": {
     "tap": "0.3.0"
