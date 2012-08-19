@@ -84,12 +84,13 @@ if(!module.parent)
     .use(require('./plugins/lines'))
     .use(require('./plugins/indent'))
     .use(require('./plugins/comment'))
+    .use(require('./plugins/search'))
     .use(require('./plugins/entry'))
     .use(require('./plugins/highlight'))
     .use(require('./plugins/easy-writer'))
     .use(require('./plugins/control'))
     .use(require('./plugins/movement'))
     .use(require('./plugins/selection')) //MUST come after movement.
-    .use(require('./plugins/line-nums')) //MUST come after selection.
+    .use(require('./plugins/line-nums')) //MUST come after selection.    
     .init()
 
