@@ -60,7 +60,6 @@ module.exports = function (doc, keys, cursor) {
       if(m.y == M.y && m.y + 1 == y) {
         q.insertAfter (m.x, styles.inverse[0])
         q.insertBefore(M.x, styles.inverse[1])
-
       }
 
       //if we are inbetween the first and last matched lines.
