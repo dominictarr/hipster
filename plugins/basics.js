@@ -13,12 +13,6 @@ module.exports = function (doc, _, cursor) {
     process.exit(0)
   }
 
-  //clear the screen after exiting
-  process.on('exit', function () {
-    cursor.reset()
-  })
-
-
   rc.file = file
 
   function toLines(data) {
