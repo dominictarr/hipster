@@ -40,7 +40,7 @@ module.exports = function (doc, keys, cursor) {
 
       if(key.name == 'left' ) {
         //go to start of previous word
-        if(doc.isFirst())
+        if(doc.isFirst() && !doc.isFirstLine())
           doc.up().end()
         else
           doc.prev()
@@ -48,7 +48,7 @@ module.exports = function (doc, keys, cursor) {
       }
       if(key.name == 'right') {
         //go to end of next word
-        if(doc.isLast())
+        if(doc.isLast() && !doc.isLastLine())
           doc.down().start()
         else
           doc.next()
