@@ -4,20 +4,47 @@ var fs = require('fs')
 var Document = require('./lib/document')
 var key = require('keypress')
 var render = require('./lib/render')
-
-key(process.stdin)
-
-process.stdin.setRawMode(true)
-process.stdin.resume()
+var es = require('event-stream')
 
 module.exports = Hipster
 
 function Hipster (rc, doc) {
 
   //internal representation of our text file
-  doc = doc || new Document()
+    doc = doc || new Document()
   
   render = render(doc, rc)
+  var input
+  if(rc.playback) {
+    input = fs.createReadStream(rc.playback).pipe(es.split()).pipe(es.parse())
+  } 
+  else {
+    process.stdin.setRawMode(true)
+    process.stdin.resume()
+    input = process.stdin
+  }
+
+  if(rc.output) {
+    var write = process.stdout.write
+    var os = fs.createWriteStream(rc.output)
+    process.stdout.write = function (data) {
+      os.write(JSON.stringify(data.toString()) + '\n')
+      write.call(process.stdout, data)
+    }
+  }
+
+  key(input)
+
+  if(rc.record) {
+    process.stdin.pipe(es.stringify()).pipe(fs.createWriteStream(rc.record))
+  }
+
+  input.on('keypress', function (e) {
+    console.error(e)
+  })
+  input.on('data', function (data) {
+    console.error(['data', data.toString() ])
+  })
   
   var hip = {
     config: rc,
@@ -40,7 +67,7 @@ function Hipster (rc, doc) {
     init: function () {
       var self = this
       this.plugins.forEach(function (plug) {
-        plug.call(self, doc, process.stdin, render)
+        plug.call(self, doc, input, render)
       })
       render.redraw()
       return this
