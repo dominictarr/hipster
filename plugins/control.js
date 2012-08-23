@@ -20,6 +20,28 @@ module.exports = function (doc, keys, render) {
     c.stdin.end()
   }
 
+  function clipIn () {
+    if(process.platform === 'darwin') {
+      send(['pbcopy'], doc.getMarked())
+    }
+    else if(process.platform === 'linux') {
+      send(['xclip', '-i', '-selection', 'clipboard'], doc.getMarked())
+    }
+  }
+
+  function clipOut () {
+    function cb (_, paste) {
+      doc.insert(paste)
+    }
+
+    if(process.platform === 'darwin') {
+      send(['pbpaste'], '', cb)
+    }
+    else if(process.platform === 'linux') {
+      send(['xclip', '-o', '-selection', 'clipboard'], '', cb)
+    }
+  }
+
   keys.on('keypress', function (ch, key) {
 
     if(key.ctrl) {
@@ -28,20 +50,15 @@ module.exports = function (doc, keys, render) {
         return
       }
       if(key.name == 'c') {
-        send(['xclip', '-i', '-selection', 'clipboard'],
-          doc.getMarked())
+        clipIn()
       }
       if(key.name == 'x') {
-        send(['xclip', '-i', '-selection', 'clipboard'],
-          doc.getMarked())
+        clipIn()
         doc.clearMarked()
       }
       if(key.name == 'p' || key.name == 'v') {
         doc.clearMarked()
-        send(['xclip', '-o', '-selection', 'clipboard'], '',
-          function (_, paste) {   
-            doc.insert(paste)
-          })
+        clipOut()
       }
       if(key.name == 'r')
         return render.redraw(), doc.move()
