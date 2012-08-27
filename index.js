@@ -11,7 +11,7 @@ module.exports = Hipster
 function Hipster (rc, doc) {
 
   //internal representation of our text file
-    doc = doc || new Document()
+  doc = doc || new Document()
   
   render = render(doc, rc)
   var input
@@ -32,8 +32,6 @@ function Hipster (rc, doc) {
       write.call(process.stdout, data)
     }
   }
-
-  key(input)
 
   if(rc.record) {
     process.stdin.pipe(es.stringify()).pipe(fs.createWriteStream(rc.record))
@@ -67,7 +65,7 @@ function Hipster (rc, doc) {
     init: function () {
       var self = this
       this.plugins.forEach(function (plug) {
-      plug.call(self, doc, keys, render)
+        plug.call(self, doc, keys, render)
       })
       render.redraw()
       return this

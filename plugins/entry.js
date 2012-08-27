@@ -6,11 +6,6 @@
 
 module.exports = function (doc, keys, cursor) {
   keys.on('keypress', function (ch, key) {
-     
-    //Refactor this when there is another command that needs to veto something.
-    //vvv TOTALLY HIDEOUS WAY TO PREVENT OTHER COMMANDS TRIGGERING.      
-    if (key.name == 'VETOED')
-        return
 
     if(key.shift && key.name.length === 1)
       key.name = key.name.toUpperCase()

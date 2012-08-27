@@ -53,10 +53,7 @@ module.exports = function (doc, keys) {
 
 //      doc.move()//something is putting the cursor in the wrong place.
     }
-
-    //Refactor this when there is another command that needs to veto something.
-    //vvv TOTALLY HIDEOUS WAY TO PREVENT OTHER COMMANDS TRIGGERING.
-     key.name = 'VETOED'
+    return true
   })
 }
 

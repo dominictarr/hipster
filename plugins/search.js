@@ -24,10 +24,7 @@ module.exports = function (doc, keys, render) {
             console.error('term is:'+term)
             render.updateFooter('find:'+term)              
         }
-        //Refactor this when there is another command that needs to veto something.
-        //vvv TOTALLY HIDEOUS WAY TO PREVENT OTHER COMMANDS TRIGGERING.         
-        key.name = 'VETOED'
-        return
+        return true
     } else {
         console.error('not acc');
     }
