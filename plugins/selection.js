@@ -14,8 +14,8 @@ module.exports = function (doc, keys, cursor) {
   //add our first listener, then readd the listeners
   //then add our last listener.
 
-  var listeners = keys.listeners('keypress')
-  keys.removeAllListeners('keypress')
+  //~ var listeners = keys.listeners('keypress')
+  //~ keys.removeAllListeners('keypress')
 
   function startSelection (ch, key) {
     //only start selection if it's a movement key.
@@ -41,11 +41,11 @@ module.exports = function (doc, keys, cursor) {
 
   keys.on('keypress', startSelection)
 
-  listeners.forEach(function (listener) {
-    keys.on('keypress', listener)
-  })   
+  //~ listeners.forEach(function (listener) {
+    //~ keys.on('keypress', listener)
+  //~ })   
 
-  keys.on('keypress', endSelection)
+  //~ keys.on('keypress', endSelection)
 
 
   this.renderers.push(function (q, x, y) {
