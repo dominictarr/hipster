@@ -16,7 +16,9 @@ module.exports = function (doc, _, cursor) {
   rc.file = file
 
   function toLines(data) {
-    return data.split('\n').map(function (e, i, a) {
+    
+    return data.split('\t').join('  ').split('\n')
+      .map(function (e, i, a) {
       //add '\n' to every line but the last one.
 //      return i + 1 < a.length ? e + '\n' : e
       return e + '\n'
