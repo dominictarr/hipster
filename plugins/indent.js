@@ -6,6 +6,7 @@ function indent (line) {
 }
 
 function deindent (line) {
+  if(line == '\n') return line
   var l = /^\s*/.exec(line)[0].length
   return line.substring(l > 1 ? 2 : l)
 }
