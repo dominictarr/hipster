@@ -18,7 +18,9 @@ module.exports = function (doc, keys, cursor) {
 
   keys.on('keypress', function (ch, key) {
 
-      if(!key.ctrl) {
+      console.error(key)
+
+      if(!key.ctrl && !key.meta) {
 
         if(key.name == 'up'   )
           (doc.isFirstLine() ? doc.start() : doc.up()).toPref().move()
@@ -36,7 +38,7 @@ module.exports = function (doc, keys, cursor) {
         if(key.name == 'end') doc.end().pref().move()
         if(key.name == 'home') doc.start().pref().move()
 
-    } else if ( key.ctrl ) {
+    } else if (key.ctrl || key.meta) {
 
       if(key.name == 'left' ) {
         //go to start of previous word
