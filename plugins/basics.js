@@ -30,6 +30,11 @@ module.exports = function (doc, _, cursor) {
   //to it on Ctrl-S (see plugins/control)
 
   try {
+    var stat = fs.statSync(file)
+    if(stat.isDirectory()) {
+      console.error(file, 'is a directory')
+      process.exit(1)
+    }
     doc.lines = toLines(fs.readFileSync(file, 'utf-8'))
     var last = doc.lines.pop()
   } catch (_) { }
