@@ -14,7 +14,9 @@ function Hipster (rc, doc) {
   doc = doc || new Document()
   
   render = render(doc, rc)
-  var input
+
+  require('keypress').enableMouse(process.stdin)
+  var input = process.stdin
   if(rc.playback) {
     input = fs.createReadStream(rc.playback).pipe(es.split()).pipe(es.parse())
   } 
@@ -37,12 +39,15 @@ function Hipster (rc, doc) {
     process.stdin.pipe(es.stringify()).pipe(fs.createWriteStream(rc.record))
   }
 
-  input.on('keypress', function (e) {
-    console.error(e)
-  })
-  input.on('data', function (data) {
-    console.error(['data', data.toString() ])
-  })
+//  input.on('keypress', function (e, k) {
+//    console.error(e, k)
+//  })
+//  input.on('mousepress', function (e, m) {
+//    console.error('MMM', e, m)
+//  })
+//  input.on('data', function (data) {
+//    console.error(['data', data.toString() ])
+//  })
   
   var hip = {
     config: rc,
@@ -75,7 +80,7 @@ function Hipster (rc, doc) {
   return hip
 }
 
-if(!module.parent)
+if(!module.parent) 
 
   Hipster(require('./lib/config'))
     .use(require('./plugins/basics'))
