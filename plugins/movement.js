@@ -87,7 +87,7 @@ module.exports = function (doc, keys, cursor) {
 
   keys.on('mousepress', function (mouse) {
     if(mouse.scroll) {
-      if(mouse.scroll > 0)
+      if(mouse.scroll < 0)
         doc.up().move()
       else
         doc.down().move()
