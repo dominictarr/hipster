@@ -37,6 +37,8 @@ module.exports = function (doc, _, cursor) {
     }
     doc.lines = toLines(fs.readFileSync(file, 'utf-8'))
     var last = doc.lines.pop()
+    if(last != '\n')
+      doc.lines.push(last)
   } catch (_) { }
 
   if(rc.file) title = file
