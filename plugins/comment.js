@@ -35,7 +35,7 @@ module.exports = function (doc, keys) {
       var M = doc.marks[1]
       var from = m.y
       //only indent do not comment the last line if the cursor is at 0
-      var to   = M.x || M.y == m.y ? M.y : M.y - 1
+      var to   = M.y //M.x || M.y == m.y ? M.y : M.y - 1
       //first decide if we will comment or uncomment.
       //uncomment, if the lines all have comments at the start.
       //else, comment.

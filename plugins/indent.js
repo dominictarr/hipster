@@ -21,12 +21,11 @@ module.exports = function (doc, keys) {
 
     // apply indentation to selected lines.
     if(doc.marks) {
-      console.error('INDENT SELECTION')
       var m = doc.marks[0]
       var M = doc.marks[1]
 
       for(var i = m.y; i <= M.y; i++) {
-        doc.updateLine(i, 
+        doc.updateLine(i,
           (key.shift ? deindent : indent) (doc.lines[i])
         )
       }
