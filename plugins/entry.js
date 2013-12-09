@@ -4,6 +4,8 @@
 //
 // A relatively small part of what a text editor actually does.
 
+var os = require('os')
+
 module.exports = function (doc, keys, cursor) {
   keys.on('keypress', function (ch, key) {
 
@@ -17,9 +19,13 @@ module.exports = function (doc, keys, cursor) {
       doc.pref()
     }
     else if(key.name == 'backspace') {
+
+      key.ctrl = key.sequence !== '\b'
+      console.error(key)
+
       if(doc.marks) doc.clearMarked()
       //quirk in keypress... TODO should make fix.
-      else if(key.ctrl || key.sequence == '\b') doc.mark().prev().mark().clearMarked()
+      else if(key.ctrl) doc.mark().prev().mark().clearMarked()
       else          doc.delete(-1)
 
       doc.pref()
