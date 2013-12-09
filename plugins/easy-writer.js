@@ -25,7 +25,8 @@ module.exports = function (doc, _, render) {
     write('\x1b]0;\u266b ' + (rc.title || 'README') + '\007')
 
   this.renderers.push(function (q) {
-    q.string = q.string + '\u266b'.grey
+    if(/[^\s]\s+$/.test(q.string))
+      q.string = q.string + '\u266b'.red
   })
 
 }
