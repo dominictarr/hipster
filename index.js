@@ -38,6 +38,14 @@ function Hipster (rc, doc) {
   if(rc.record) {
     process.stdin.pipe(es.stringify()).pipe(fs.createWriteStream(rc.record))
   }
+  if(rc.raw) {
+    var write = process.stdout.write
+    var os = fs.createWriteStream(rc.raw)
+    process.stdout.write = function (data) {
+      os.write(data)
+      write.call(process.stdout, data)
+    }
+  }
 
 //  input.on('keypress', function (e, k) {
 //    console.error(e, k)
