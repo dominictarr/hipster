@@ -7,8 +7,7 @@
     "url": "git://github.com/dominictarr/hipster.git"
   },
   "dependencies": {
-    "charm": "~0.1.0",
-    "keypress": "~0.0.2",
+    "keypress": "0.2.1",
     "rc": "0.0.3",
     "colors": "~0.6.0-1",
     "insert-queue": "0.0.3",
@@ -18,7 +17,6 @@
     "tap": "0.3.0"
   },
   "bundleDependencies": [
-    "keypress",
     "charm"
   ],
   "scripts": {
