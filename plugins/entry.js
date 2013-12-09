@@ -31,7 +31,7 @@ module.exports = function (doc, keys, cursor) {
       doc.pref()
     }
     else if(key.name == 'tab')       doc.write('  ') .pref()
-    else if(key.name == 'enter')     doc.clearMarked().newline().pref()
+    else if(key.name == 'return')     doc.clearMarked().newline().pref()
     else if(' ' <= ch && ch <= '~')  doc.clearMarked().write(ch).pref()
   })
 }
