@@ -8,10 +8,11 @@
   },
   "dependencies": {
     "keypress": "0.2.1",
-    "rc": "0.0.3",
+    "rc": "~0.3.2",
     "colors": "~0.6.0-1",
     "insert-queue": "0.0.3",
-    "event-stream": "~3.0.1"
+    "event-stream": "~3.0.1",
+    "ansi-recover": "git:github.com/dominictarr/ansi-recover.git#27e7851a70a2dcba075e10a3c0ac43f74d9a626d"
   },
   "devDependencies": {
     "tap": "0.3.0"
