@@ -8,19 +8,13 @@ module.exports = function (doc, _, cursor) {
   var file = rc._[0] || rc.file || 
     join(__dirname, '..', 'README.md'), title = file
 
-  if(rc.v || rc.version) {
-    console.log(require('../package.json').version)
-    process.exit(0)
-  }
-
   rc.file = file
 
   function toLines(data) {
     
     return data.split('\t').join('  ').split('\n')
       .map(function (e, i, a) {
-      //add '\n' to every line but the last one.
-//      return i + 1 < a.length ? e + '\n' : e
+      //add \n to every line
       return e + '\n'
     })
   }
@@ -62,12 +56,12 @@ module.exports = function (doc, _, cursor) {
         [].slice.call(arguments)
           .map(inspect).join(' ')
         +'\n'
-      )    
+      )
     }
   }
 
   //log to stderr.
   //hipster file 2> debug.log
-  else log = console.error 
+  else log = console.error
 
 }

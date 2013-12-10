@@ -1,5 +1,12 @@
 #!/usr/bin/env node
 
+var config = require('./lib/config')
+
+if(config.v || config.version) {
+  console.log(require('./package.json').version)
+  process.exit()
+}
+
 require('ansi-recover')({cursor: true, mouse: true})
 
 var fs = require('fs')
@@ -90,9 +97,9 @@ function Hipster (rc, doc) {
   return hip
 }
 
-if(!module.parent) 
+if(!module.parent)
 
-  Hipster(require('./lib/config'))
+  Hipster(config)
     .use(require('./plugins/basics'))
     .use(require('./plugins/lines'))
     .use(require('./plugins/indent'))
