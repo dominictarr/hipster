@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+require('ansi-recover')({cursor: true, mouse: true})
+
 var fs = require('fs')
 var Document = require('./lib/document')
 var keys = require('./lib/keys')
