@@ -69,7 +69,6 @@ module.exports = function (doc, keys, render) {
       if(key.name == 'l')
         doc.start().mark().down().mark().move()
       if(key.name == 'q') {
-        if(rc.clear !== false) {console.log('\r'); render.reset();}
         process.stdin.pause()
         process.exit()
       }
