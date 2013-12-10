@@ -1,6 +1,6 @@
 {
   "name": "hipster",
-  "version": "0.15.4",
+  "version": "0.15.5",
   "homepage": "https://github.com/dominictarr/hipster",
   "repository": {
     "type": "git",
@@ -18,9 +18,6 @@
   "devDependencies": {
     "tap": "0.3.0"
   },
-  "bundleDependencies": [
-    "charm"
-  ],
   "scripts": {
     "test": "tap test"
   },
