@@ -21,12 +21,14 @@ module.exports = function (doc, _, render) {
 
   if(rc.showEnding === false) return
 
+  var ending = rc.showEnding === true ? '\u266b' : rc.showEnding
+
   render.
     write('\x1b]0;\u266b ' + (rc.title || 'README') + '\007')
 
   this.renderers.push(function (q) {
-    if(/[^\s]\s+$/.test(q.string))
-      q.string = q.string + '\u266b'.red
+    if(/\s+$/.test(q.string))
+      q.string = q.string + ending.red
   })
 
 }
