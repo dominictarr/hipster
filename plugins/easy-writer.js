@@ -1,3 +1,4 @@
+require('colors')
 
 module.exports = function (doc, _, render) {
 
@@ -22,6 +23,7 @@ module.exports = function (doc, _, render) {
   if(rc.showEnding === false) return
 
   var ending = rc.showEnding === true ? '\u266b' : rc.showEnding
+  ending = ending || '/'
 
   render.
     write('\x1b]0;\u266b ' + (rc.title || 'README') + '\007')
