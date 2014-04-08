@@ -39,7 +39,8 @@ hip filename [options]
 --margin     # Set to N >= 2 for line numbers.
 --page       # PageUp/Down jump size.
 --version|-v # print version and exit
-
+--weird      # enable weird backspace.
+             # (if it deletes a whole word when you press backspace, enable this)
 ```
 
 `hipster` uses [rc](https://npm.im/rc) for unmanaging configuration. 
