@@ -7,6 +7,9 @@
 var os = require('os')
 
 module.exports = function (doc, keys, cursor) {
+
+  var weird = this.config.weird
+
   keys.on('keypress', function (ch, key) {
 
     if(key.shift && key.name.length === 1)
@@ -19,9 +22,11 @@ module.exports = function (doc, keys, cursor) {
       doc.pref()
     }
     else if(key.name == 'backspace') {
-
-      key.ctrl = key.sequence !== '\b'
-      console.error(key)
+      if(weird)
+        key.ctrl = key.sequence !== '\b'
+      else
+        key.ctrl = key.sequence === '\b'
+      console.error(ch, key)
 
       if(doc.marks) doc.clearMarked()
       //quirk in keypress... TODO should make fix.
