@@ -12,7 +12,7 @@ module.exports = function (doc, keys, render) {
             render.updateFooter(' ')
             return
         }
-        else if ('enter' == key.name) {
+        else if ({enter: true, return: true}[key.name]) {
             accumalating = false
             search(term)
         } else {
