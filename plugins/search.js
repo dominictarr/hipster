@@ -19,7 +19,7 @@ module.exports = function (doc, keys, render) {
             if(key.name == 'backspace') {
                 term = term.substring(0, term.length-1)
             } else {
-                term += key.sequence        
+                term += key.sequence || key.name
             }
             console.error('term is:'+term)
             render.updateFooter('find:'+term)              
