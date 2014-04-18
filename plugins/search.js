@@ -56,6 +56,6 @@ module.exports = function (doc, keys, render) {
               return;
           }           
       }
-      console.error('no matches')      
+      render.updateFooter('no matches')
   }
 }
