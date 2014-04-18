@@ -12,14 +12,14 @@ module.exports = function (doc, keys, render) {
             render.updateFooter(' ')
             return
         }
-        else if ('enter' == key.name) {
+        else if ({enter: true, return: true}[key.name]) {
             accumalating = false
             search(term)
         } else {
             if(key.name == 'backspace') {
                 term = term.substring(0, term.length-1)
             } else {
-                term += key.sequence        
+                term += key.sequence || key.name
             }
             console.error('term is:'+term)
             render.updateFooter('find:'+term)              
@@ -56,6 +56,6 @@ module.exports = function (doc, keys, render) {
               return;
           }           
       }
-      console.error('no matches')      
+      render.updateFooter('no matches')
   }
 }
