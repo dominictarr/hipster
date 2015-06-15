@@ -31,7 +31,7 @@ module.exports = function (doc, _, cursor) {
     }
     doc.lines = toLines(fs.readFileSync(file, 'utf-8'))
     var last = doc.lines.pop()
-    if(last != '\n')
+    if(last != '\n' || !doc.lines.length)
       doc.lines.push(last)
   } catch (_) { }
 
