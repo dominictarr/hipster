@@ -3,6 +3,7 @@
 
 module.exports = function (doc, keys, render) {
 
+  var saved = false
   var rc = this.config
   var fs = require('fs')
   var cp = require('child_process')
@@ -44,8 +45,11 @@ module.exports = function (doc, keys, render) {
 
   keys.on('keypress', function (ch, key) {
 
+    console.error(ch, key)
+
     if(key.ctrl) {
       if(key.name == 's' && !rc.noSave) {
+        saved = true
         fs.writeFileSync(rc.file, doc.lines.join(''), 'utf-8')
         return
       }
@@ -70,9 +74,12 @@ module.exports = function (doc, keys, render) {
         doc.start().mark().down().mark().move()
       if(key.name == 'q') {
         process.stdin.pause()
-        process.exit()
+        //exit error if not saved, so you can cancel editing
+        //git commit messages
+        process.exit(saved ? 0 : 1)
       }
     }
 
   })
 }
+
