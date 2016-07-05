@@ -70,6 +70,9 @@ function Hipster (rc, doc) {
     config: rc,
     plugins: [],
 
+    // doc instance
+    doc: doc,
+
     //the list of things that want to draw.
     renderers: render.renderers,
 
