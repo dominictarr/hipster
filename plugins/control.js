@@ -50,7 +50,7 @@ module.exports = function (doc, keys, render) {
     if(key.ctrl) {
       if(key.name == 's' && !rc.noSave) {
         saved = true
-        fs.writeFileSync(rc.file, doc.lines.join(''), 'utf-8')
+        fs.writeFileSync(rc.file, doc.lines.join('').replace(/\n+$/g,'\n'), 'utf-8')
         return
       }
       if(key.name == 'c') {
@@ -82,4 +82,3 @@ module.exports = function (doc, keys, render) {
 
   })
 }
-
