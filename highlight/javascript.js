@@ -3,7 +3,7 @@
 //var iq = require('insert-queue')
 var styles = require('../lib/styles')
 
-var keyword       = /function|if|return|var|while|for|throw|catch|finally|new|typeof|else|switch|case/g
+var keyword       = /function|if|return|var|while|for|throw|catch|finally|new|typeof|else|switch|case|=>/g
 var rbrace  = /[\(\)]/g
 var sbrace  = /[\[\]]/g
 var cbrace  = /[\{\}]/g
